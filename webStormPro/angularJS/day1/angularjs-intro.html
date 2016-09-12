@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>angularjs 介绍</title>
+    <style>
+        input.ng-invalid {
+            background-color: lightblue;
+        }
+    </style>
+</head>
+<body>
+    <div ng-app="myApp">
+        <div>1.基础数据绑定和变量初始化</div>
+        <label for="i_name">名字：</label><input id="i_name" type="text" ng-model="name"/>
+        <p>{{name}}</p>
+        <div ng-init="quantity=1;cost=5">
+            <p ng-bind="quantity * cost"></p>
+        </div>
+        <div>2.重复HTML元素</div>
+        <div ng-init="names=['s1','s2','s3']">
+            <ul>
+                <li ng-repeat="index in names">
+                    {{index}}
+                </li>
+            </ul>
+        </div>
+        <div>3.自定义指令</div>
+        <div hello-world></div>
+        <!-- directive:hello-world -->
+        <hello-world></hello-world>
+        <div>4.验证用户输入</div>
+        <form name="myForm">
+            Email:
+            <input type="email" name="myAddress" ng-model="t">
+            <span ng-show="myForm.myAddress.$error.email">不是一个合法的邮箱地址</span>
+            <h1>状态</h1>
+            <p>Valid: {{myForm.myAddress.$valid}} (如果输入的值是合法的则为 true)。</p>
+            <p>Dirty: {{myForm.myAddress.$dirty}} (如果值改变则为 true)。</p>
+            <p>Touched: {{myForm.myAddress.$touched}} (如果通过触屏点击则为 true)。</p>
+        </form>
+        <div>5.控制器</div>
+        <div ng-controller="myCtrl">
+            名: <input type="text" ng-model="firstName"><br>
+            姓: <input type="text" ng-model="lastName"><br>
+            <br>
+            姓名: {{firstName + " " + lastName}}
+        </div>
+        <div ng-controller="myCtrl2">
+            名: <input type="text" ng-model="firstName2"><br>
+            <br>
+            姓名:{{fullName()}}
+        </div>
+        <div>6.过滤器</div>
+        <p>大写：{{"zmk" | uppercase}}</p>
+        <div>7.自定义服务</div>
+        <h1 ng-controller="myCtrl3">{{customerFunc()}}</h1>
+        <div>8.过滤中使用自定义服务</div>
+        <p>自定义服务过滤：{{"zmk" | myFormat}}</p>
+        <div>9.下拉框</div>
+        <select ng-model="selectNames" ng-options="x for x in names"></select>
+    </div>
+
+    <script type="text/javascript" src="../angular.min.js"></script>
+    <script type="text/javascript">
+        var app=angular.module("myApp",[]);
+        app.directive("helloWorld",function(){
+            console.log("hello world");
+           return {
+               restrict:"MAE",
+               replace:true,
+               template:"<h1>hello world</h1>"
+           };
+        });
+        app.controller('myCtrl', function($scope,$rootScope) {
+            $scope.firstName = "John";
+            $scope.lastName = "Doe";
+            console.log($scope);
+            console.log($rootScope);
+        });
+        app.controller('myCtrl2', function($scope,$rootScope) {
+            $scope.firstName2 = "John2";
+            console.log($scope);
+            console.log($rootScope);
+            $scope.fullName=function (){
+                //调用3次？
+                console.log($scope.firstName2);
+                return $scope.firstName2;
+            }
+        });
+
+        app.service('myFun',function (){
+           this.func1=function (){
+               return "hello World";
+           }
+        });
+
+        app.controller('myCtrl3', function($scope,myFun) {
+            $scope.customerFunc=myFun.func1;
+        });
+
+        app.filter('myFormat',['myFun',function (myFun){
+            return function (x) {
+                console.log(myFun);
+                return x+myFun.func1();
+            }
+        }]);
+    </script>
+</body>
+</html>

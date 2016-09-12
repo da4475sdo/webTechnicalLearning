@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div id="1"></div>
+    <div id="2"></div>
+    <div id="3"></div>
+<script type="text/javascript">
+    (function (){
+        setTimeout('Asynchronous1()',2000);
+        setTimeout('Asynchronous2()',1000);
+        //Synchronous();
+    })();
+
+
+    function Asynchronous1(){
+        var one=document.getElementById("1");
+        console.log("异步1："+new Date().getTime());
+        one.innerHTML="我准备好了1 "+new Date().getTime();
+    }
+
+
+    function Asynchronous2(){
+        var one=document.getElementById("3");
+        console.log("异步2："+new Date().getTime());
+        one.innerHTML="我准备好了2 "+new Date().getTime();
+    }
+
+
+    function Synchronous(){
+        var startTime=new Date().getTime();
+        while(new Date().getTime()-startTime<=3000);
+        document.getElementById("2").innerHTML="充能完毕，准备就绪"+new Date().getTime();
+        console.log("充能完毕，准备就绪");
+        startTime=new Date().getTime();
+        while(new Date().getTime()-startTime<=3000);
+    }
+</script>
+</body>
+</html>

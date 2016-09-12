@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>依赖注入</title>
+</head>
+<body ng-app="mainApp" ng-controller="CalcController">
+    <div>value方式</div>
+        {{result}}
+
+    <script type="text/javascript" src="../angular.min.js"></script>
+    <script type="text/javascript">
+        var mainApp = angular.module("mainApp", []);
+
+        mainApp.config(function($provide) {
+            $provide.provider('MathService', function() {
+                this.$get = function() {
+                    var factory = {};
+
+                    factory.multiply = function(a, b) {
+                        return a * b;
+                    }
+                    return factory;
+                };
+            });
+        });
+
+        mainApp.value("defaultInput", 5);
+
+        mainApp.factory('MathService', function() {
+            var factory = {};
+
+            factory.multiply = function(a, b) {
+                return a * b;
+            }
+            return factory;
+        });
+
+        mainApp.service('CalcService', function(MathService){
+            this.square = function(a) {
+                return MathService.multiply(a,a);
+            }
+        });
+
+        mainApp.controller('CalcController', function($scope, MathService, defaultInput) {
+            $scope.number = defaultInput;
+            $scope.result = MathService.multiply($scope.number,$scope.number);
+
+           /* $scope.square = function() {
+                $scope.result = CalcService.square($scope.number);
+                return $scope.result;
+            }*/
+        });
+    </script>
+</body>
+</html>
